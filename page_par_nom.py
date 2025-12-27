@@ -67,7 +67,7 @@ def initialize_values() -> None:
 
 initialize_values()
 
-st.title("Recherche par nom")
+st.title("Recherche par dénomination")
 
 def interroge_base() -> None:
     if not st.session_state['nom']:
@@ -87,12 +87,12 @@ def interroge_base() -> None:
 
     affiche_tableau(st.session_state['ppm_nom'])
 
-tab_nom, tab_departements = st.tabs(['Nom', 'Départements'])
+tab_nom, tab_departements = st.tabs(['Dénomination', 'Départements'])
 
 
 
 with tab_nom:
-    st.text_input("Dénomination de la personne morale", "PARIS", key='nom')
+    st.text_input("Dénomination de la personne morale", placeholder="ex : SCI des Tilleuls", key='nom')
 
     options = {
         "exact": "Correspondance exact",
@@ -105,7 +105,7 @@ with tab_nom:
     nom_est_correct = True
 
     if st.session_state['nom'] is None:
-        st.warning('Entrez un texte')
+        st.warning('Entrez une dénomination')
         nom_est_correct = False
     elif not len(st.session_state['nom']) >= 2:
         st.warning('Entrez au moins 2 caractères')
@@ -117,7 +117,7 @@ with tab_nom:
         disabled = True
 
     if not st.session_state['departements']:
-        st.warning("Remplir l'onglet départements")
+        st.warning("Limitez la recherche à un ou plusieurs départements")
         disabled = True
 
     if len(st.session_state['departements']) >= 3:
@@ -139,7 +139,6 @@ with tab_departements:
     st.multiselect(
         "A quels départements limiter la recherche ?",
         DEPARTEMENTS_CODES,
-        default=st.session_state['departements'],
         format_func=format_function,
         key='departements'
     )

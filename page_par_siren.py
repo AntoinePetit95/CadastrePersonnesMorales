@@ -137,7 +137,7 @@ with tab_fichier:
         if len(excel_file.sheet_names) > 1:
             onglet = st.selectbox("plusieurs onglets existent. Lequel choisir ?", excel_file.sheet_names)
 
-        onglet_df = pd.read_excel(fichier, sheet_name=onglet)
+        onglet_df = pd.read_excel(fichier, sheet_name=onglet, dtype='str')
 
         with st.expander("aperçu de l'onglet"):
             st.write(onglet_df)

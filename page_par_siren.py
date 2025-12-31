@@ -5,6 +5,7 @@ from EF_PPM.retriever.retriever import PPM
 from EF_PPM.utils.dept_code import DEPARTEMENTS_CODES, DEPARTEMENTS
 
 
+
 @st.fragment
 def affiche_tableau(ppm:PPM) -> None:
 
@@ -13,7 +14,7 @@ def affiche_tableau(ppm:PPM) -> None:
     help_suf = ("La **subdivision fiscale (suf)** est une partie de parcelle ayant la même nature de culture "
                 "(c’est-à-dire la même affectation fiscale). Il est très rare que les SUF d'une même parcelle "
                 "aient des propriétaires différents, il est conseillé de les regrouper pour une lecture plus simple.")
-    group_by_suf = st.toggle("Grouper les SUF", help=help_suf, value=True)
+    group_by_suf = st.toggle("Grouper les SUF (recommandé)", help=help_suf, value=True)
     if group_by_suf:
         ppm_to_show = ppm_to_show.merged_suf
 
@@ -23,18 +24,18 @@ def affiche_tableau(ppm:PPM) -> None:
         ppm_to_show = ppm_to_show.merged_rights
 
     help_essential = "Ne conserver que les informations essentielles."
-    show_only_essential = st.toggle("Simplifier", help=help_essential, value=True)
+    show_only_essential = st.toggle("Simplifier (recommandé)", help=help_essential, value=True)
     if show_only_essential:
         ppm_to_show = ppm_to_show.essential
 
     ppm_to_show.sort_by_idu()
 
-    styler = ppm_to_show.table.style.hide().bar(
+    styler = ppm_to_show.na_as_empty_string().table.style.hide().bar(
         subset=['contenance'], align="mid", color="#82C46C"
     ).set_table_styles([
-        {"selector": "th", "props": [("font-size", "11px")]},  # en-têtes
-        {"selector": "td", "props": [("font-size", "11px")]},  # cellules
-    ])
+          {"selector": "th", "props": [("font-size", "11px")]},           # en-têtes
+          {"selector": "td", "props": [("font-size", "11px")]},           # cellules
+      ])
 
     with st.container(height=300):
         st.write(styler.to_html(), unsafe_allow_html=True)
@@ -49,10 +50,11 @@ def affiche_tableau(ppm:PPM) -> None:
     )
 
     if downloaded:
-        st.success("Téléchargement terminé. Énergie Foncière met cet outil gratuit à disposition pour simplifier "
-                   "l’accès à la donnée foncière. si ça vous a aidé, laissez-nous un "
-                   "[avis Google](https://g.page/r/CXS-zJLN66DrEAE/review) "
-                   "ou [discutons ensemble](https://www.linkedin.com/in/antoine-petit-ef/) !")
+        st.success("**Et voilà !**   \n   \n**Énergie Foncière** met cet outil à disposition pour simplifier l’accès à "
+                   "la donnée foncière.   \nCela vous a été utile ? Laissez-nous un "
+                   "👍 [**avis Google**](https://g.page/r/CXS-zJLN66DrEAE/review) ou "
+                   "💬 [**discutons ensemble**](https://www.linkedin.com/in/antoine-petit-ef/) !")
+
 
 def initialize_values() -> None:
     values = {
@@ -69,8 +71,20 @@ initialize_values()
 info_recherche_pm = ("La recherche par numéro SIREN peut être incomplète, "
                      "car certains numéros SIREN de la base correspondent à "
                      "une numérotation interne des services de l'état.")
-st.title("Recherche par numéro SIREN", help=info_recherche_pm)
+st.title("🪪 Recherche par numéro SIREN", help=info_recherche_pm)
 
+def format_function(dept_code: str) -> str:
+    return f"{dept_code} - {DEPARTEMENTS[dept_code]}"
+
+st.multiselect(
+    "Départements de recherche",
+    DEPARTEMENTS_CODES,
+    format_func=format_function,
+    key='departements',
+    placeholder='Limiter la recherche aux départements ...'
+)
+if len(st.session_state['departements']) >= 3:
+    st.warning(f"Beaucoup de départements ont été sélectionnés, cela peut ralentir la recherche.")
 
 def interroge_base() -> None:
     if not st.session_state['SIRENS']:
@@ -81,23 +95,51 @@ def interroge_base() -> None:
         ppm = PPM()
         ppm.fetch_sirens(st.session_state['SIRENS'], limit_to_department=st.session_state['departements'])
         st.session_state['ppm_siren'] = ppm
-    st.success("Informations récupérées !")
 
-    affiche_tableau(st.session_state['ppm_siren'])
+    if ppm.empty:
+        st.info('Aucun résultat !', icon='🫥')
+    else:
+        st.success("Informations récupérées !", icon="🎉")
+        affiche_tableau(st.session_state['ppm_siren'])
+
+
+def resultats(_id: str) -> None:
+    st.divider()
+    disabled = False
+    if not st.session_state['SIRENS']:
+        disabled = True
+
+    if not st.session_state['departements']:
+        disabled = True
+
+    cr1, cr2 = st.columns([5,2], vertical_alignment="center")
+
+
+    query_caption = (f"Demande actuelle : {len(st.session_state['SIRENS'])} SIREN "
+                    f"dans {len(st.session_state['departements'])} départements")
+
+    cr1.caption(query_caption, text_alignment='left')
+    bouton_interroger = cr2.button(
+        icon='🔍',
+        label=f"interroger la base",
+        disabled=disabled,
+        type='primary',
+        key=f"query_button_{_id}",
+        width='stretch'
+    )
+    if bouton_interroger:
+        interroge_base()
 
 def supprimer_siren(_siren: str) -> None:
     if _siren in st.session_state['SIRENS']:
         st.session_state['SIRENS'].remove(_siren)
 
 
-tab_pm, tab_fichier, tab_liste_pm, tab_departements, tab_resultats = st.tabs([
+tab_pm, tab_fichier, tab_liste_pm = st.container(border=True).tabs([
     'Ajouter une personne morale',
     'Importer un fichier',
-    f'Numéros SIREN de la demande',
-    f'Départements',
-    'Résultats'],
-)
-
+    f'Numéros SIREN de la demande'
+    ])
 
 
 with tab_pm:
@@ -112,9 +154,11 @@ with tab_pm:
         siren_est_correct = False
 
     bouton_ajouter_siren = st.button(
-        label='ajouter à la demande',
+        icon="➕",
+        label='Ajouter',
+        width='stretch',
         disabled=not siren_est_correct,
-        type='primary'
+        type='secondary'
     )
 
     if bouton_ajouter_siren:
@@ -123,11 +167,7 @@ with tab_pm:
             st.session_state['SIRENS'].append(siren)
             st.session_state['parcelles'].sort()
         st.rerun()
-    st.caption(
-        f"Demande actuelle : {len(st.session_state['SIRENS'])} SIREN "
-        f"dans {len(st.session_state['departements'])} départements",
-        text_alignment='right'
-    )
+    resultats("SIREN")
 
 with tab_fichier:
     fichier = st.file_uploader("Importer des numéro SIREN depuis un fichier excel", type=['xlsx', 'xls'])
@@ -153,11 +193,14 @@ with tab_fichier:
             st.write(pd.DataFrame(liste_siren))
 
         if not liste_siren:
-            caption = "pas de numéros SIREN"
+            caption = "Aucun numéro SIREN"
         else:
-            caption = f"ajouter les numéros SIREN"
+            caption = f"Ajouter la liste"
 
         bouton_ajouter_sirens_depuis_fichier = st.button(
+            type='secondary',
+            icon="➕",
+            width='stretch',
             label=caption,
             disabled=not liste_siren,
         )
@@ -167,18 +210,15 @@ with tab_fichier:
             st.session_state['SIRENS'].extend(liste_siren)
             st.session_state['SIRENS'] = list(set(st.session_state['SIRENS']))
             st.session_state['SIRENS'].sort()
-            st.rerun()
-    st.caption(
-        f"Demande actuelle : {len(st.session_state['SIRENS'])} SIREN "
-        f"dans {len(st.session_state['departements'])} départements",
-        text_alignment='right'
-    )
+
+    resultats("fichier")
 
 with tab_liste_pm:
     bouton_vider_liste = st.button(
-        label="Vider la liste des numéros SIREN",
+        icon='❌',
+        label="Supprimer tout",
         disabled=not st.session_state['SIRENS'],
-        type='primary',
+        type='secondary',
         width='stretch'
     )
 
@@ -195,44 +235,4 @@ with tab_liste_pm:
         f"dans {len(st.session_state['departements'])} départements",
         text_alignment='right'
     )
-
-with tab_departements:
-    def format_function(dept_code: str) -> str:
-            return f"{dept_code} - {DEPARTEMENTS[dept_code]}"
-
-    st.multiselect(
-        "A quels départements limiter la recherche ?",
-        DEPARTEMENTS_CODES,
-        format_func=format_function,
-        key='departements'
-    )
-    st.caption(
-        f"Demande actuelle : {len(st.session_state['SIRENS'])} SIREN "
-        f"dans {len(st.session_state['departements'])} départements",
-        text_alignment='right'
-    )
-
-with tab_resultats:
-    disabled = False
-    if not st.session_state['SIRENS']:
-        st.warning("Aucun numéros SIREN")
-        disabled = True
-
-    if not st.session_state['departements']:
-        st.warning("Limitez la recherche à un ou plusieurs départements")
-        disabled = True
-
-    if len(st.session_state['departements']) >= 3:
-        st.warning(f'Beaucoup de départements ont été sélectionnés, la recherche prendra environ '
-                   f'{len(st.session_state["departements"]) * 4} secondes')
-    bouton_interroger = st.button(
-        label="interroger la base",
-        disabled=disabled,
-        type='primary'
-    )
-    if not disabled:
-        st.markdown(f"Recherche de la propriété des numéros SIREN **{'**, **'.join(st.session_state['SIRENS'])}** "
-                    f"dans les départements : **{'**, **'.join(st.session_state['departements'])}**")
-    if bouton_interroger:
-        interroge_base()
 

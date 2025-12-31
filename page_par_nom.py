@@ -12,7 +12,7 @@ def affiche_tableau(ppm:PPM) -> None:
     help_suf = ("La **subdivision fiscale (suf)** est une partie de parcelle ayant la même nature de culture "
                 "(c’est-à-dire la même affectation fiscale). Il est très rare que les SUF d'une même parcelle "
                 "aient des propriétaires différents, il est conseillé de les regrouper pour une lecture plus simple.")
-    group_by_suf = st.toggle("Grouper les SUF", help=help_suf, value=True)
+    group_by_suf = st.toggle("Grouper les SUF (recommandé)", help=help_suf, value=True)
     if group_by_suf:
         ppm_to_show = ppm_to_show.merged_suf
 
@@ -22,18 +22,18 @@ def affiche_tableau(ppm:PPM) -> None:
         ppm_to_show = ppm_to_show.merged_rights
 
     help_essential = "Ne conserver que les informations essentielles."
-    show_only_essential = st.toggle("Simplifier", help=help_essential, value=True)
+    show_only_essential = st.toggle("Simplifier (recommandé)", help=help_essential, value=True)
     if show_only_essential:
         ppm_to_show = ppm_to_show.essential
 
     ppm_to_show.sort_by_idu()
 
-    styler = ppm_to_show.table.style.hide().bar(
+    styler = ppm_to_show.na_as_empty_string().table.style.hide().bar(
         subset=['contenance'], align="mid", color="#82C46C"
     ).set_table_styles([
-        {"selector": "th", "props": [("font-size", "11px")]},  # en-têtes
-        {"selector": "td", "props": [("font-size", "11px")]},  # cellules
-    ])
+          {"selector": "th", "props": [("font-size", "11px")]},           # en-têtes
+          {"selector": "td", "props": [("font-size", "11px")]},           # cellules
+      ])
 
     with st.container(height=300):
         st.write(styler.to_html(), unsafe_allow_html=True)
@@ -48,16 +48,16 @@ def affiche_tableau(ppm:PPM) -> None:
     )
 
     if downloaded:
-        st.success("Téléchargement terminé. Énergie Foncière met cet outil gratuit à disposition pour simplifier "
-                   "l’accès à la donnée foncière. si ça vous a aidé, laissez-nous un "
-                   "[avis Google](https://g.page/r/CXS-zJLN66DrEAE/review) "
-                   "ou [discutons ensemble](https://www.linkedin.com/in/antoine-petit-ef/) !")
+        st.success("**Et voilà !**   \n   \n**Énergie Foncière** met cet outil à disposition pour simplifier l’accès à "
+                   "la donnée foncière.   \nCela vous a été utile ? Laissez-nous un "
+                   "👍 [**avis Google**](https://g.page/r/CXS-zJLN66DrEAE/review) ou "
+                   "💬 [**discutons ensemble**](https://www.linkedin.com/in/antoine-petit-ef/) !")
 
 
 def initialize_values() -> None:
     values = {
         'nom': None,
-        'mode': 'exact',
+        'mode': 'contains',
         'departements': [],
         'ppm_nom': PPM(),
     }
@@ -67,7 +67,21 @@ def initialize_values() -> None:
 
 initialize_values()
 
-st.title("Recherche par dénomination")
+st.title("💬 Recherche par dénomination")
+
+def format_function(dept_code: str) -> str:
+    return f"{dept_code} - {DEPARTEMENTS[dept_code]}"
+
+st.multiselect(
+    "Départements de recherche",
+    DEPARTEMENTS_CODES,
+    format_func=format_function,
+    key='departements',
+    placeholder='Limiter la recherche aux départements ...'
+)
+if len(st.session_state['departements']) >= 3:
+    st.warning(f"Beaucoup de départements ont été sélectionnés, cela peut ralentir la recherche.")
+
 
 def interroge_base() -> None:
     if not st.session_state['nom']:
@@ -83,29 +97,20 @@ def interroge_base() -> None:
             mode=st.session_state['mode']
         )
         st.session_state['ppm_nom'] = ppm
-    st.success("Informations récupérées !")
 
-    affiche_tableau(st.session_state['ppm_nom'])
+    if ppm.empty:
+        st.info('Aucun résultat !', icon='🫥')
+    else:
+        st.success("Informations récupérées !", icon="🎉")
+        affiche_tableau(st.session_state['ppm_nom'])
 
-tab_nom, tab_departements = st.tabs(['Dénomination', 'Départements'])
-
-
-
-with tab_nom:
-    st.text_input("Dénomination de la personne morale", placeholder="ex : SCI des Tilleuls", key='nom')
-
-    options = {
-        "exact": "Correspondance exact",
-        "contains": "Contient",
-    }
-    format_function = lambda x: options[x]
-
-    st.pills("Mode", options=options.keys(), format_func=format_function, key='mode')
-
+def resultats(_id: str) -> None:
+    st.divider()
     nom_est_correct = True
 
     if st.session_state['nom'] is None:
-        st.warning('Entrez une dénomination')
+        nom_est_correct = False
+    elif st.session_state['nom'] == '':
         nom_est_correct = False
     elif not len(st.session_state['nom']) >= 2:
         st.warning('Entrez au moins 2 caractères')
@@ -117,29 +122,31 @@ with tab_nom:
         disabled = True
 
     if not st.session_state['departements']:
-        st.warning("Limitez la recherche à un ou plusieurs départements")
         disabled = True
 
-    if len(st.session_state['departements']) >= 3:
-        st.warning(f'Beaucoup de départements ont été sélectionnés, la recherche prendra environ '
-                   f'{len(st.session_state["departements"]) * 4} secondes')
-    bouton_interroger = st.button(
-        label="interroger la base",
-        disabled=disabled,
-        type='primary'
-    )
+    cr1, cr2 = st.columns([5,2], vertical_alignment="center")
 
+    bouton_interroger = cr2.button(
+        icon='🔍',
+        label=f"interroger la base",
+        disabled=disabled,
+        type='primary',
+        key=f"query_button_{_id}",
+        width='stretch'
+    )
     if bouton_interroger:
         interroge_base()
 
-with tab_departements:
-    def format_function(dept_code: str) -> str:
-            return f"{dept_code} - {DEPARTEMENTS[dept_code]}"
+with st.container(border=True):
+    st.text_input("Dénomination de la personne morale", placeholder="SCI des Tilleuls", key='nom')
 
-    st.multiselect(
-        "A quels départements limiter la recherche ?",
-        DEPARTEMENTS_CODES,
-        format_func=format_function,
-        key='departements'
-    )
+    options = {
+        "contains": "Contient",
+        "exact": "Correspondance exact",
+    }
+    format_function = lambda x: options[x]
+
+    st.pills("Mode", options=options.keys(), format_func=format_function, key='mode')
+
+    resultats("Dénomination")
 

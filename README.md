@@ -43,10 +43,10 @@ Une fois les résultats affichés, vous avez plusieurs choix de format avant de 
 - **Grouper les SUF** : regrouper ou non les subdivisions fiscales. Ces dernières sont des sous-unités des parcelles, 
 et sont souvent peu pertinentes pour regarder la propriété.
 Si cette option est active, les champs correspondant aux SUF seront 
-concaténés (ex: "A|B"), sinon, ils seront sur plusieurs lignes.
+concaténés (ex : "A | B"), sinon, ils seront sur plusieurs lignes.
 - **Grouper les PM** : regrouper ou non les personnes morales en une seule ligne. 
 Si cette option est active, les champs correspondant aux personnes morales seront 
-concaténés (ex: "ETAT|ONF"), sinon, ils seront sur plusieurs lignes.
+concaténés (ex : "ÉTAT | ONF"), sinon, ils seront sur plusieurs lignes.
 - **Simplifier** : permet de s'affranchir de plusieurs informations secondaires présentes dans la source.
 
 

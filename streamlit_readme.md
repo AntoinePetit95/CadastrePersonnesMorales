@@ -1,5 +1,5 @@
-# Énergie Foncière – Parcellaire PM (application Streamlit)
-Le foncier des personnes morales, simplement !
+# Énergie Foncière – Parcellaire PM
+*Le foncier des personnes morales, simplement !*
 
 Énergie Foncière met gratuitement à disposition Parcellaire PM, une application Streamlit pour explorer 
 les fichiers officiels des parcelles détenues par des personnes morales. L’objectif est simple : 

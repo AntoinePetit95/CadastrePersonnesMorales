@@ -103,8 +103,8 @@ class PPM:
         suf_dependent_info = [Field.SUF.value, Field.CONTENANCE_SUF.value, Field.NAT_CAD.value]
         for column in suf_dependent_info:
             new_ppm.table[column] = [
-                '|'.join([
-                    str(v) or '' for v in set(original_df.loc[[i], column])
+                ' | '.join([
+                    str(v) if not pd.isna(v) else '' for v in set(original_df.loc[[i], column])
                 ])
                 for i in new_ppm.table.index
             ]
@@ -216,12 +216,12 @@ class PPM:
             name = 'parcelles_personnes_morales'
         assert os.path.isdir(folder_path)
         file_path = fr'{folder_path}{os.path.sep}{name}.xlsx'
-        self.table.fillna('').to_excel(file_path, index=False, sheet_name='parcelles')
+        self.table.replace(pd.NA, '').to_excel(file_path, index=False, sheet_name='parcelles')
 
     @property
     def excel_file_bytes(self) -> io.BytesIO:
         excel_file_buffer = io.BytesIO()
-        self.table.fillna('').to_excel(excel_file_buffer, index=False, sheet_name='parcelles')
+        self.table.replace(pd.NA, '').to_excel(excel_file_buffer, index=False, sheet_name='parcelles')
         excel_file_buffer.seek(0)
         return excel_file_buffer
 
@@ -236,3 +236,11 @@ class PPM:
     def sort_by_idu(self) -> None:
         self.table.sort_values(by=[Field.IDU.value], inplace=True, ignore_index=True)
 
+    def na_as_empty_string(self) -> 'PPM':
+        new_ppm = copy.deepcopy(self)
+        new_ppm.table.replace(pd.NA, '', inplace=True)
+        return new_ppm
+
+    @property
+    def empty(self) -> bool:
+        return len (self.table) == 0

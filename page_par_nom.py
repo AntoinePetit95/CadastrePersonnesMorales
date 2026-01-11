@@ -1,7 +1,7 @@
 import streamlit as st
 
-from EF_PPM.retriever.retriever import PPM
-from EF_PPM.utils.dept_code import DEPARTEMENTS_CODES, DEPARTEMENTS
+from CPM.retriever.retriever import PPM
+from CPM.utils.dept_code import DEPARTEMENTS_CODES, DEPARTEMENTS
 
 
 @st.fragment
@@ -17,7 +17,7 @@ def affiche_tableau(ppm:PPM) -> None:
         ppm_to_show = ppm_to_show.merged_suf
 
     help_pm = "Grouper les personnes morales sur une seule ligne."
-    group_by_pm = st.toggle("Grouper les PM", help=help_pm, value=False)
+    group_by_pm = st.toggle("Grouper les personnes morales", help=help_pm, value=False)
     if group_by_pm:
         ppm_to_show = ppm_to_show.merged_rights
 
@@ -48,7 +48,8 @@ def affiche_tableau(ppm:PPM) -> None:
     )
 
     if downloaded:
-        st.success("**Et voilà !**   \n   \n**Énergie Foncière** met cet outil à disposition pour simplifier l’accès à "
+        st.success("**Et voilà !**   \n   \n[**Énergie Foncière**](https://energie-fonciere.fr/) "
+                   "met cet outil à disposition pour simplifier l’accès à "
                    "la donnée foncière.   \nCela vous a été utile ? Laissez-nous un "
                    "👍 [**avis Google**](https://g.page/r/CXS-zJLN66DrEAE/review) ou "
                    "💬 [**discutons ensemble**](https://www.linkedin.com/in/antoine-petit-ef/) !")
@@ -67,7 +68,7 @@ def initialize_values() -> None:
 
 initialize_values()
 
-st.title("💬 Recherche par dénomination")
+st.subheader("💬 Recherche par dénomination")
 
 def format_function(dept_code: str) -> str:
     return f"{dept_code} - {DEPARTEMENTS[dept_code]}"

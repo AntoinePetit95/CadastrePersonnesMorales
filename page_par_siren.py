@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-from EF_PPM.retriever.retriever import PPM
-from EF_PPM.utils.dept_code import DEPARTEMENTS_CODES, DEPARTEMENTS
+from CPM.retriever.retriever import PPM
+from CPM.utils.dept_code import DEPARTEMENTS_CODES, DEPARTEMENTS
 
 
 
@@ -19,7 +19,7 @@ def affiche_tableau(ppm:PPM) -> None:
         ppm_to_show = ppm_to_show.merged_suf
 
     help_pm = "Grouper les personnes morales sur une seule ligne."
-    group_by_pm = st.toggle("Grouper les PM", help=help_pm, value=False)
+    group_by_pm = st.toggle("Grouper les personnes morales", help=help_pm, value=False)
     if group_by_pm:
         ppm_to_show = ppm_to_show.merged_rights
 
@@ -50,7 +50,8 @@ def affiche_tableau(ppm:PPM) -> None:
     )
 
     if downloaded:
-        st.success("**Et voilà !**   \n   \n**Énergie Foncière** met cet outil à disposition pour simplifier l’accès à "
+        st.success("**Et voilà !**   \n   \n[**Énergie Foncière**](https://energie-fonciere.fr/) "
+                   "met cet outil à disposition pour simplifier l’accès à "
                    "la donnée foncière.   \nCela vous a été utile ? Laissez-nous un "
                    "👍 [**avis Google**](https://g.page/r/CXS-zJLN66DrEAE/review) ou "
                    "💬 [**discutons ensemble**](https://www.linkedin.com/in/antoine-petit-ef/) !")
@@ -71,7 +72,7 @@ initialize_values()
 info_recherche_pm = ("La recherche par numéro SIREN peut être incomplète, "
                      "car certains numéros SIREN de la base correspondent à "
                      "une numérotation interne des services de l'état.")
-st.title("🪪 Recherche par numéro SIREN", help=info_recherche_pm)
+st.subheader("🪪 Recherche par numéro SIREN", help=info_recherche_pm)
 
 def format_function(dept_code: str) -> str:
     return f"{dept_code} - {DEPARTEMENTS[dept_code]}"
@@ -115,7 +116,7 @@ def resultats(_id: str) -> None:
     cr1, cr2 = st.columns([5,2], vertical_alignment="center")
 
 
-    query_caption = (f"Demande actuelle : {len(st.session_state['SIRENS'])} SIREN "
+    query_caption = (f"🧺 Demande actuelle : {len(st.session_state['SIRENS'])} SIREN "
                     f"dans {len(st.session_state['departements'])} départements")
 
     cr1.caption(query_caption, text_alignment='left')

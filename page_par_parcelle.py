@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from EF_PPM.retriever.retriever import PPM
+from CPM.retriever.retriever import PPM
 
 
 @st.fragment
@@ -17,7 +17,7 @@ def affiche_tableau(ppm:PPM) -> None:
         ppm_to_show = ppm_to_show.merged_suf
 
     help_pm = "Grouper les personnes morales sur une seule ligne."
-    group_by_pm = st.toggle("Grouper les PM", help=help_pm, value=False)
+    group_by_pm = st.toggle("Grouper les personnes morales", help=help_pm, value=False)
     if group_by_pm:
         ppm_to_show = ppm_to_show.merged_rights
 
@@ -48,7 +48,8 @@ def affiche_tableau(ppm:PPM) -> None:
     )
 
     if downloaded:
-        st.success("**Et voilà !**   \n   \n**Énergie Foncière** met cet outil à disposition pour simplifier l’accès à "
+        st.success("**Et voilà !**   \n   \n[**Énergie Foncière**](https://energie-fonciere.fr/) "
+                   "met cet outil à disposition pour simplifier l’accès à "
                    "la donnée foncière.   \nCela vous a été utile ? Laissez-nous un "
                    "👍 [**avis Google**](https://g.page/r/CXS-zJLN66DrEAE/review) ou "
                    "💬 [**discutons ensemble**](https://www.linkedin.com/in/antoine-petit-ef/) !")
@@ -72,7 +73,7 @@ def initialize_values() -> None:
 
 initialize_values()
 
-st.title("1️⃣ Recherche par parcelles")
+st.subheader("1️⃣ Recherche par parcelles")
 
 
 def interroge_base() -> None:
@@ -95,9 +96,9 @@ def resultats(_id: str) -> None:
     cr1, cr2 = st.columns([5,2], vertical_alignment="center")
 
     if len(st.session_state['parcelles']) == 0:
-        query_caption = f"Aucunes parcelles à demander"
+        query_caption = f"🧺 Aucune parcelle"
     else:
-        query_caption = f"**{len(st.session_state['parcelles'])}** parcelles dans la demande"
+        query_caption = f"🧺 **{len(st.session_state['parcelles'])}** parcelles dans la demande"
 
     cr1.caption(query_caption, text_alignment='left')
     bouton_interroger = cr2.button(

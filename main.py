@@ -6,10 +6,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
-import os
 
-# Streamlit app URL from environment variable (or default)
-STREAMLIT_URL = os.environ.get("STREAMLIT_APP_URL", "https://energie-fonciere-parcellaire-pm.streamlit.app/")
+
+STREAMLIT_URL = "https://energie-fonciere-parcellaire-pm.streamlit.app/"
 
 def main():
     options = Options()

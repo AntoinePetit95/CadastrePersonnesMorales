@@ -5,10 +5,10 @@ from enum import EnumType
 from typing import Literal
 import pandas as pd
 
-from EF_PPM.retriever.data_folder_handler import PPMDataFolderHandler
-from EF_PPM.retriever.data_file_handler import PPMDataFileHandler
-from EF_PPM.utils.dept_code import get_dept_code_from_reference_code, DEPARTEMENTS_CODES
-from EF_PPM.utils.field_names import Field, plot_fields, right_fields
+from CPM.retriever.data_folder_handler import PPMDataFolderHandler
+from CPM.retriever.data_file_handler import PPMDataFileHandler
+from CPM.utils.dept_code import get_dept_code_from_reference_code, DEPARTEMENTS_CODES
+from CPM.utils.field_names import Field, plot_fields, right_fields
 
 
 class PPM:

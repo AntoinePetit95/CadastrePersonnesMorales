@@ -62,7 +62,7 @@ liste de références (parcelles, communes, départements, ou par propriétaire)
 Voici un exemple de code pour interagir avec le module :
 
 ```python
-from EF_PPM import PPM
+from CPM import PPM
 
 # initialisation de l'objet PPM
 ppm = PPM()

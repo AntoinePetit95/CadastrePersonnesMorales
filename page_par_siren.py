@@ -14,12 +14,12 @@ def affiche_tableau(ppm:PPM) -> None:
     help_suf = ("La **subdivision fiscale (suf)** est une partie de parcelle ayant la même nature de culture "
                 "(c’est-à-dire la même affectation fiscale). Il est très rare que les SUF d'une même parcelle "
                 "aient des propriétaires différents, il est conseillé de les regrouper pour une lecture plus simple.")
-    group_by_suf = st.toggle("Grouper les SUF (recommandé)", help=help_suf, value=True)
+    group_by_suf = st.toggle("Regrouper les SUF (recommandé)", help=help_suf, value=True)
     if group_by_suf:
         ppm_to_show = ppm_to_show.merged_suf
 
-    help_pm = "Grouper les personnes morales sur une seule ligne."
-    group_by_pm = st.toggle("Grouper les personnes morales", help=help_pm, value=False)
+    help_pm = "Grouper les propriétaires sur une seule ligne."
+    group_by_pm = st.toggle("Regrouper les propriétaires", help=help_pm, value=False)
     if group_by_pm:
         ppm_to_show = ppm_to_show.merged_rights
 

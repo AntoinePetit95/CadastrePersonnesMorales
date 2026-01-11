@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 
 
-STREAMLIT_URL = "https://energie-fonciere-parcellaire-pm.streamlit.app/"
+STREAMLIT_URL = "https://cadastre-des-personnes-morales.streamlit.app/"
 
 def main():
     options = Options()

@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel>=0.37.1", "setuptools-scm>=8.0", "pandas>
 build-backend = "setuptools.build_meta"
 
 [project]
-name = 'EF_PPM'
+name = 'Cadastre Personnes Morales'
 version = "1.0.0"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -12,4 +12,4 @@ authors = [{name = "Antoine PETIT", email = "antoine.petit@energie-fonciere.fr"}
 dependencies = []
 
 [tool.setuptools.package-data]
-EF_PPM = ["*.csv", "*.txt"]
+CPM = ["*.csv", "*.txt"]

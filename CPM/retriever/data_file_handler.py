@@ -3,11 +3,11 @@ from typing import Literal
 
 import pandas as pd
 
-from EF_PPM.utils.group_code import group_code
-from EF_PPM.utils.droits_code import codes_droit
-from EF_PPM.utils.forme_juridique_code import formes_juridiques
-from EF_PPM.utils.column_names_raw_files import RawField
-from EF_PPM.utils.field_names import Field
+from CPM.utils.group_code import group_code
+from CPM.utils.droits_code import codes_droit
+from CPM.utils.forme_juridique_code import formes_juridiques
+from CPM.utils.column_names_raw_files import RawField
+from CPM.utils.field_names import Field
 
 
 class PPMDataFileHandler:

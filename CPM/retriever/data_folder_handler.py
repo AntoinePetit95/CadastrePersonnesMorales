@@ -1,6 +1,6 @@
 import os
 
-from EF_PPM import PPM_FOLDER_PATH
+from CPM import PPM_FOLDER_PATH
 
 
 class PPMDataFolderHandler:

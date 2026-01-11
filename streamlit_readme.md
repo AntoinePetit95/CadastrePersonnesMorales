@@ -1,30 +1,30 @@
-# Énergie Foncière – Parcellaire PM
+# Cadastre des personnes morales
 *Le foncier des personnes morales, simplement !*
 
-Énergie Foncière met gratuitement à disposition Parcellaire PM, une application Streamlit pour explorer 
-les fichiers officiels des parcelles détenues par des personnes morales. L’objectif est simple : 
-rendre une donnée publique, utile mais difficile à manipuler, enfin exploitable en quelques clics, 
-sans devoir ouvrir et croiser de lourds fichiers CSV.
+Énergie Foncière mets à disposition le cadastre des personnes morales, 
+une application conçue pour explorer les fichiers officiels des parcelles détenues par des personnes morales. 
+L’objectif est simple : rendre une donnée publique, utile, mais difficile à manipuler, enfin exploitable 
+en quelques clics, sans devoir opérer avec de lourds fichiers CSV.
 
-Nous avons conçu cet outil pour simplifier le travail de nos clients et, plus largement, de tous les 
+Nous avons développé cet outil pour simplifier le travail de nos clients et, plus largement, de tous les 
 acteurs du foncier : développeurs ENR, bureaux d’études, collectivités, notaires, géomètres, aménageurs, 
 agriculteurs, etc.
 
 ## Accéder à l’application
-Application Streamlit : https://energie-fonciere-parcellaire-pm.streamlit.app/
+Application Streamlit : https://cadastre-des-personnes-morales.streamlit.app/
 
 ## À quoi sert l’outil ?
 Les fichiers PPM (Parcelles des Personnes Morales) sont fournis par l’État et mis à jour chaque année. 
 Ils contiennent des informations très riches, mais la structure est “brute” (niveaux fins comme 
 les SUF, multiples lignes par parcelle et/ou par propriétaire, volumes importants, etc.).
 
-Parcellaire PM permet de :
+Le cadastre des personnes morales permet de :
 - retrouver rapidement les personnes morales associées à une parcelle (ou une liste de parcelles) ;
 - rechercher les parcelles associées à une personne morale via un numéro SIREN ;
 - effectuer une recherche textuelle par nom (avec options de recherche complète / incomplète) ;
 - télécharger le résultat dans un fichier lisible, en choisissant un niveau de détail adapté à votre besoin.
 
-## Comment l’utiliser (workflow recommandé)
+## Comment l’utiliser 
 L’application fonctionne en 4 étapes :
 1. Choisir un mode de recherche.
 2. Choisir une ou plusieurs références (parcelles, numéro SIREN, dénomination).
@@ -66,25 +66,23 @@ ne corresponde.
 ## Options de format avant téléchargement
 Une fois les résultats affichés, vous pouvez choisir le format le plus adapté :
 
-**Grouper les SUF** : Les SUF (subdivisions fiscales) sont des sous-unités de parcelles. Elles sont souvent 
+**Regrouper les SUF** : Les SUF (subdivisions fiscales) sont des sous-unités de parcelles. Elles sont souvent 
 peu pertinentes pour une lecture “foncière” standard.
 - activé : les champs SUF sont concaténés (ex : "A|B")
 - désactivé : une ligne par SUF (plus détaillé)  
 
-**Grouper les PM** : Permet de regrouper (ou non) les personnes morales sur une même parcelle.
+**Regrouper les propriétaires** : Permet de regrouper les propriétaires d'une même parcelle.
 - activé : les champs personnes morales sont concaténés (ex : "ETAT|ONF")
 - désactivé : une ligne par personne morale (plus détaillé)  
 
 **Simplifier** : Permet de retirer certaines informations secondaires présentes dans la source 
-pour obtenir un fichier plus lisible et directement exploitable.
+pour obtenir un fichier plus lisible.
 
-Vous pouvez ensuite télécharger le fichier :
-- soit en version “simplifiée” (lisible, orientée usage),
-- soit en version “entière” (détaillée, proche de la source).
+Vous pouvez ensuite télécharger le fichier.
 
 ## Données et périmètre
-L’outil s’appuie sur les fichiers “locaux et parcelles des personnes morales” publiés sous Licence Ouverte / Open Licence 2.0.
-Parcellaire PM exploite uniquement la partie “propriétés non bâties (parcelles)”.
+L’outil s’appuie sur les fichiers “locaux et parcelles des personnes morales” publiés sous 
+Licence Ouverte / Open Licence 2.0. Il exploite uniquement la partie “propriétés non bâties (parcelles)”.
 
 Source officielle : https://www.data.gouv.fr/fr/datasets/fichiers-des-locaux-et-des-parcelles-des-personnes-morales/
 
@@ -96,7 +94,7 @@ Source officielle : https://www.data.gouv.fr/fr/datasets/fichiers-des-locaux-et-
 ## À propos d’Énergie Foncière
 Énergie Foncière accompagne les porteurs de projets et les acteurs du territoire sur 
 les sujets fonciers : qualification, prospection, négociation, sécurisation, formation et audit. 
-Parcellaire PM illustre notre conviction : une donnée foncière bien structurée et 
+Le cadastre des personnes morales illustre notre conviction : une donnée foncière bien structurée et 
 bien présentée fait gagner du temps, réduit les erreurs et améliore la qualité des décisions.
 
 Retrouvez-nous sur notre site internet : https://energie-fonciere.fr/
@@ -108,4 +106,6 @@ ou ouvrez un ticket sur le [dépôt GitHub](https://github.com/AntoinePetit95/EF
 
 
 ## Avertissement
-Cet outil vise à faciliter la lecture et l’exploitation de données publiques. Il ne remplace pas une analyse juridique complète (titres, servitudes, baux, indivisions, etc.) ni une vérification auprès des sources officielles et des professionnels compétents.
+Cet outil vise à faciliter la lecture et l’exploitation de données publiques. 
+Il ne remplace pas une analyse juridique complète (titres, servitudes, baux, indivisions, etc.) 
+ni une vérification auprès des sources officielles et des professionnels compétents.
